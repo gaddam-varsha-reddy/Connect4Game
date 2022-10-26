@@ -1,0 +1,84 @@
+body{
+    background-color: black;
+    color:white;
+    font-family: sans-serif;
+}
+header{
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+h2{
+    text-align: center;
+}
+#board{
+    padding: 15px 0px 5px 15px;
+    height:450px;
+    background-color: darkblue;
+    display: flex;
+    flex-wrap: wrap; 
+}
+.tile{
+    height:55px;
+    width:55px;
+    background-color: white;
+    margin:0px 2px 0px 0px;
+    border-radius: 50%;
+}
+.player1Color{
+    position: relative;
+    animation-name: dropanimation;
+    animation-duration: 900ms;
+    background-color: yellowgreen;
+}
+.player2Color{
+    position: relative;
+    animation-name: dropanimation;
+    animation-duration: 900ms;
+    background-color: red;
+}
+table{
+    margin-left: 150px;
+    margin-top:100px;
+    border: 3px solid navy;
+    border-collapse: collapse;
+}
+table th{
+    text-align: center;
+}
+#player1-score{
+    text-align: center;
+    font-size: 50px;
+    width: 80px;
+}
+#player2-score{
+    text-align: center;
+    font-size: 50px;
+    width: 80px;
+}
+.activeTable{
+    /* background-color:whitesmoke;
+    color:black; */
+    box-shadow: 0 0 25px;
+}
+.modal-title{
+    color:black;
+}
+.modal-body{
+    color:black;
+}
+.tile:hover{
+    box-shadow: 0 0 10px;
+}
+@keyframes dropanimation {
+    0% { transform: translateY(-450px); }
+   100% { transform: translateY(0px); }
+ }
+ .strike {
+position: relative;
+animation-name: dropbelow;
+animation-duration: 2s;
+  }
+  @keyframes dropbelow {
+    0%   {left:0px; top:0px;}
+    100% {left:0px; top:250px;}
+  }
