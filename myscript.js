@@ -2,7 +2,7 @@
 var player1=0,player2=1,activeplayer=0,gameover=false,
 board,rows=6,columns=7,board,coOrd,x,y,newRow,newPosition,
 player1Score,player2Score,score,player1Table,player2Table,
-reStart,playAgain,modal,modalbody,modaltitle,count;
+reStart,playAgain,modal,modalbody,modaltitle,count,turn1,turn2;
 
 player1Score=document.querySelector("#player1-score");
 player2Score=document.querySelector("#player2-score");
@@ -13,6 +13,8 @@ reStart=document.querySelector(".reStart");
 modal=document.getElementById("Modal");
 modalbody=document.querySelector(".modal-body");
 modaltitle=document.querySelector(".modal-title");
+turn1=document.querySelector("#turn1");
+turn2=document.querySelector("#turn2");
 board=[];
 setGame();
 
@@ -37,6 +39,7 @@ function newGame(){
     activeplayer=0;
     player2Table.classList.remove("activeTable");
     player1Table.classList.add("activeTable");
+    addTurnText(1);
     gameover=false;  
 }
 function setGame(){
@@ -68,58 +71,43 @@ function GetVaccantRow(col){
 function winningCheck(player){
     for(let i=0;i<rows;i++){
         for(let j=0;j<columns-3;j++){
-            if(board[i][j]==player && board[i][j+1]==player
-            && board[i][j+2]==player && board[i][j+3]==player){
-                document.getElementById(`${i}-${j}`).classList.add("strike");
-                document.getElementById(`${i}-${j+1}`).classList.add("strike");
-                document.getElementById(`${i}-${j+2}`).classList.add("strike");
-                document.getElementById(`${i}-${j+3}`).classList.add("strike");
-                gameover=true;
+            if(CheckingConditions(i,j,i,j+1,i,j+2,i,j+3,player))
                 return true;
-            }
         }
     }
     for(let i=0;i<rows-3;i++){
         for(let j=0;j<columns;j++){
-            if(board[i][j]==player && board[i+1][j]==player
-                && board[i+2][j]==player && board[i+3][j]==player){
-                    document.getElementById(`${i}-${j}`).classList.add("strike");
-                    document.getElementById(`${i+1}-${j}`).classList.add("strike");
-                    document.getElementById(`${i+2}-${j}`).classList.add("strike");
-                    document.getElementById(`${i+3}-${j}`).classList.add("strike");
-                    gameover=true;
-                    return true;
-                }
+            if(CheckingConditions(i,j,i+1,j,i+2,j,i+3,j,player))
+                return true;
         }
     }
     for(let i=3;i<rows;i++){
         for(let j=0;j<columns-3;j++){
-            if(board[i][j]==player && board[i-1][j+1]==player
-                && board[i-2][j+2]==player && board[i-3][j+3]==player){
-                    document.getElementById(`${i}-${j}`).classList.add("strike");
-                    document.getElementById(`${i-1}-${j+1}`).classList.add("strike");
-                    document.getElementById(`${i-2}-${j+2}`).classList.add("strike");
-                    document.getElementById(`${i-3}-${j+3}`).classList.add("strike");
-                    gameover=true;
-                    return true;
-                }
+            if(CheckingConditions(i,j,i-1,j+1,i-2,j+2,i-3,j+3,player))
+                return true;
         }
     }
-    for(let i=0;i<3;i++){
-        for(let j=0;j<4;j++){
-            if(board[i][j]==player && board[i+1][j+1]==player
-                && board[i+2][j+2]==player && board[i+3][j+3]==player){
-                    document.getElementById(`${i}-${j}`).classList.add("strike");
-                    document.getElementById(`${i+1}-${j+1}`).classList.add("strike");
-                    document.getElementById(`${i+2}-${j+2}`).classList.add("strike");
-                    document.getElementById(`${i+3}-${j+3}`).classList.add("strike");
-                    gameover=true;
-                    return true;
-                }
+    for(let i=0;i<rows-3;i++){
+        for(let j=0;j<columns-3;j++){
+            if(CheckingConditions(i,j,i+1,j+1,i+2,j+2,i+3,j+3,player))
+                return true;
         }
     }
 }
-
+function CheckingConditions(a1,b1,a2,b2,a3,b3,a4,b4,player){
+    if(board[a1][b1]==player && board[a2][b2]==player
+        && board[a3][b3]==player && board[a4][b4]==player){
+            AddingClassStrike(a1,b1);
+            AddingClassStrike(a2,b2);
+            AddingClassStrike(a3,b3);
+            AddingClassStrike(a4,b4);
+            gameover=true;
+            return true;
+        }
+}
+function AddingClassStrike(a,b){
+    document.getElementById(`${a}-${b}`).classList.add("strike");
+}
 function startPlay(e){
     if(!gameover){
         coOrd=e.target.id.split("-");
@@ -128,18 +116,19 @@ function startPlay(e){
         if(validLocation(y)){
             newRow=GetVaccantRow(y);
             newPosition=document.getElementById(`${newRow}-${y}`);
+            newPosition.classList.add(`player${activeplayer+1}Color`);
             if(activeplayer==0){
                 board[newRow][y]="player-0";
-                newPosition.classList.add("player1Color");
                 player1Table.classList.remove("activeTable");
                 player2Table.classList.add("activeTable");
+                addTurnText(2);
                 activeplayer=1;
             }
             else{
                 board[newRow][y]="player-1";
-                newPosition.classList.add("player2Color");
                 player2Table.classList.remove("activeTable");
                 player1Table.classList.add("activeTable");
+                addTurnText(1);
                 activeplayer=0;
             }
         }
@@ -152,33 +141,38 @@ function startPlay(e){
             }
         }
         if(count>6){ 
-            if(winningCheck("player-0")){
-                player2Table.classList.remove("activeTable");
-                score=parseInt(player1Score.textContent);
-                score+=1;
-                player1Score.textContent=score;
-                modalbody.textContent="Player 1 Won";
-                modaltitle.textContent="Hurray!!";
-                setTimeout(openModal, 1000);
-            }
-            else if(winningCheck("player-1")){
-                player1Table.classList.remove("activeTable");
-                score=parseInt(player2Score.textContent);
-                score+=1;
-                player2Score.textContent=score;
-                modalbody.textContent="Player 2 Won";
-                modaltitle.textContent="Hurray!!";
-                setTimeout(openModal, 1000);
-            }
-            else if(count==42){
-                modalbody.textContent="It's a Draw";
-                modaltitle.textContent="Oops!!";
-                setTimeout(openModal, 1000);
-            }
+            if(winningCheck("player-0"))
+                addModalContent(1);
+            else if(winningCheck("player-1"))
+                addModalContent(2);
+            else if(count==42)
+                addModalContent(3);
         }
-    }
-    
+    }   
 }
+
+function addTurnText(turn){
+    turn==1 ? (turn1.textContent="Your Turn",turn2.textContent=" ") : (turn2.textContent="Your Turn",turn1.textContent=" ");
+}
+
+function addModalContent(playerno){
+   if (playerno==1 || playerno==2){
+        modalbody.textContent=`Player ${playerno} Won`;
+        modaltitle.textContent="Hurray!!";
+        let playerscore=document.getElementById(`player${playerno}-score`);
+        playerscore.textContent=parseInt(playerscore.textContent)+1;
+   }
+   else{
+        modalbody.textContent="It's a Draw";
+        modaltitle.textContent="Oops!!";
+   }
+   player1Table.classList.remove("activeTable");
+   player2Table.classList.remove("activeTable");
+   turn1.textContent=" ";
+   turn2.textContent=" ";
+   setTimeout(openModal, 1000);
+}
+
 function openModal() {
     backdrop.style.display = "block";
     modal.style.display = "block";

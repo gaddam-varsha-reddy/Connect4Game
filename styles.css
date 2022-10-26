@@ -10,6 +10,18 @@ header{
 h2{
     text-align: center;
 }
+#turn1{
+    padding-top: 15px;
+    color: lightgray;
+    text-align: center;
+    font-size: 25px;
+}
+#turn2{
+    padding-top: 15px;
+    color: lightgray;
+    text-align: center;
+    font-size: 25px;
+}
 #board{
     padding: 15px 0px 5px 15px;
     height:450px;
@@ -37,7 +49,7 @@ h2{
     background-color: red;
 }
 table{
-    margin-left: 150px;
+    margin-left: 100px;
     margin-top:100px;
     border: 3px solid navy;
     border-collapse: collapse;
@@ -80,5 +92,5 @@ animation-duration: 2s;
   }
   @keyframes dropbelow {
     0%   {left:0px; top:0px;}
-    100% {left:0px; top:250px;}
+    100% {left:0px; top:300px;}
   }
